@@ -1,2 +1,2 @@
 # Homework2
-Homework 2 repository for ST 55 (601)
+Homework 2 assignment for ST 558 (601)
