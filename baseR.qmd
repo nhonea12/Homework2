@@ -1,0 +1,99 @@
+---
+title: "Programming in Base R"
+author: "Nathan Honea"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+## Task 1: Basic Vector Practice
+
+```{r}
+# vector of pre-treatment values
+pre_treat <- c(120, 151, 125, 126, 115, 132, 132, 129, 134, 139, 127, 122, 127, 135, 133, 128, 147, 138, 140, 132)
+
+# vector of post-treatment values
+post_treat <- c(127, 145, 135, 122, 115, 122, 123, 126, 126, 129, 132, 146, 120, 114, 121, 120, 128, 120, 133, 115)
+
+# give names to the elements of the pre-treatment vector
+names(pre_treat) <- paste("Subject", 1:20, sep = "_")
+
+# give names to the elements of the post-treatment vector (same names as pre-treatment)
+names(post_treat) <- paste("Subject", 1:20, sep = "_")
+
+# calculate the decrease in blood pressure for each patient by subtracting post-treatment measures from pre-treatment (positive values are decreases in blood pressure)
+treat_diff <- pre_treat - post_treat
+treat_diff
+
+# calculate the mean decrease in blood pressure
+mean(treat_diff)
+
+# return which subjects saw a decrease in blood pressure (postitive values in treat_diff)
+which(treat_diff > 0)
+
+# subset the vector based to include only subjects with a decrease in blood pressure (positive values in treat_diff)
+treat_pos <- which(treat_diff > 0)
+treat_pos
+
+# calculate the average decrease in blood pressure for those where the blood pressure decreased 
+mean(treat_pos)
+```
+
+## Task 2: Basic Data Frame Practice
+
+```{r}
+# create a data frame with 4 columns based on the vectors used in task 1
+patient <- names(pre_treat)
+pre_bp <- pre_treat
+post_bp <- post_treat
+diff_bp <- treat_diff
+bp_df <- data.frame(patient, pre_bp, post_bp, diff_bp)
+rownames(bp_df) <- NULL # remove the Subject_1, Subject_2, etc. from the row indices of the data frame, since it is now stored as a variable in patient
+bp_df
+
+# return only rows in the data frame where diff_bp is negative
+bp_df[diff_bp < 0, ]
+
+# create a new column in the data frame that is TRUE if post_bp if less than 120, and FALSE otherwise
+bp_df$less_than_120 <- bp_df$post_bp < 120
+
+# print the data frame out
+knitr::kable(bp_df)
+```
+
+## Task 3: List Practice
+
+```{r}
+# create a vector of patients in the placebo group
+patient <- paste("Subject", 1:10, sep = "_")
+
+# create a vector of pre-placebo blood pressure scores
+pre_bp <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+
+# create a vector of post-placebo blood pressure scores
+post_bp <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+
+# create a vector of the differences in bp scores for placebo
+diff_bp <- pre_bp - post_bp
+
+# create a vector of whether the post-placebo bp was less than 120
+less_than_120 <- post_bp < 120
+
+# combine these vectors to make a placebo data frame
+bp_df_plac <- data.frame(patient, pre_bp, post_bp, diff_bp, less_than_120)
+
+bp_df_plac
+
+# create a list with both data frames as elements, name each element
+bp_list <- list(treament = bp_df, placebo = bp_df_plac)
+
+
+# access the first element of the list in three different ways
+bp_list[1] # return as list of 1
+bp_list[[1]] # return as data frame
+bp_list$treament # return as data frame
+
+# access the pre_bp column in the placebo group from the list
+bp_list$placebo[ , 2]
+bp_list$placebo$pre_bp # can also do this!
+```
